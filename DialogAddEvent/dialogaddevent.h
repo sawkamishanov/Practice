@@ -32,10 +32,8 @@ private:
     QSqlTableModel *model;
     QDataWidgetMapper *mapper;
 
-private:
     void setupModel();
     void createUI();
-    void accept();
 };
 
 #endif // DialogAddEvent_H

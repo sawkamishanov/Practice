@@ -29,19 +29,30 @@ SOURCES += \
     main.cpp \
     MuseumClass/museumsource.cpp \
     DataBase/database.cpp \
-    DialogWindow/dialogaddevent.cpp
+    DialogAddEvent/dialogaddevent.cpp \
+    DialogAddMuseum/dialogaddmuseum.cpp \
+    StartWindow/startwindow.cpp \
+    HelpMenu/helpmenu.cpp
 
 HEADERS += \
     MainWindow/mainwindow.h \
     EventClass/eventclass.h \
     MuseumClass/museumclass.h \
     DataBase/database.h \
-    DialogWindow/dialogaddevent.h
+    DialogAddEvent/dialogaddevent.h \
+    DialogAddMuseum/dialogaddmuseum.h \
+    StartWindow/startwindow.h \
+    HelpMenu/helpmenu.h
 
 FORMS += \
     MainWindow/mainwindow.ui \
-    DialogWindow/dialogaddevent.ui
+    DialogAddEvent/dialogaddevent.ui \
+    DialogAddMuseum/dialogaddmuseum.ui \
+    StartWindow/startwindow.ui \
+    HelpMenu/helpmenu.ui
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES +=
 

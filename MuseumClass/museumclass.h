@@ -2,19 +2,20 @@
 #define MUSEUMCLASS_H
 #include "EventClass/eventclass.h"
 
-class Musem : public Event
+class Museum
 {
 public:
-    Musem() : name(0), type(0), location(0), price(0), information(0) {}
-    Musem(const Musem&);
-    Musem(Musem&&);
-    ~Musem();
+    Museum()  {}
+    Museum(const Museum&);
+    Museum(Museum&&);
+    ~Museum() {}
+    void setType(QString _type) { type = _type; }
+    void setOfficialSite(QString _site) { site = _site; }
+    QString getType() const { return type; }
+    QString getOfficialSite() const { return site; }
 private:
-    std::string name;
-    std::string type;
-    std::string location;
-    float price;
-    std::string information;
+    QString type,
+            site;
 };
 
 #endif // MUSEUMCLASS_H

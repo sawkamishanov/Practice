@@ -26,11 +26,18 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="1" colspan="2">
-    <widget class="QLineEdit" name="LocationLineEdit"/>
+   <item row="8" column="1">
+    <widget class="QDateTimeEdit" name="DateTimeEdit"/>
    </item>
-   <item row="6" column="1" colspan="2">
-    <widget class="QLineEdit" name="HoursLineEdit"/>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Официальный сайт</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QLineEdit" name="LocationLineEdit"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
@@ -39,29 +46,19 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Официальный сайт</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="2">
+   <item row="9" column="2">
     <widget class="QPushButton" name="nextButton">
      <property name="text">
       <string>Следующий</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Краткая информация</string>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="NameLineEdit">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QLineEdit" name="TypeLineEdit"/>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -70,34 +67,21 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QLineEdit" name="InformationLineEdit"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>Возраст</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Расположение</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="NameLineEdit"/>
-   </item>
-   <item row="7" column="1">
+   <item row="9" column="1">
     <widget class="QPushButton" name="previousButton">
      <property name="text">
       <string>Предыдущий</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="3">
+   <item row="11" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -107,18 +91,80 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QLineEdit" name="OfficialSiteLineEdit"/>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QLineEdit" name="AgeLineEdit"/>
-   </item>
-   <item row="6" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
-      <string>Время работы</string>
+      <string>Дата</string>
      </property>
     </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Возраст</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="2">
+    <widget class="QLineEdit" name="OfficialSiteLineEdit"/>
+   </item>
+   <item row="7" column="1">
+    <widget class="QComboBox" name="AgeComboBox">
+     <item>
+      <property name="text">
+       <string>Для всех</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Для детей</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Для взрослых</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QComboBox" name="TypeComboBox">
+     <item>
+      <property name="text">
+       <string>Выставка</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Концерт</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Экскурсия</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Фестиваль</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Театр</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Краткая информация</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QPlainTextEdit" name="InformationPlainTextEdit"/>
    </item>
   </layout>
  </widget>
