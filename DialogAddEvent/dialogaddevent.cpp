@@ -2,7 +2,7 @@
 #include "ui_DialogAddEvent.h"
 #include <QDebug>
 
-DialogAddEvent::DialogAddEvent(int row, QWidget *parent) :
+DialogAddEvent::DialogAddEvent(int id, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogAddEvent)
 {
@@ -17,13 +17,22 @@ DialogAddEvent::DialogAddEvent(int row, QWidget *parent) :
      * тогда диалог работает по принципу создания новой записи.
      * А именно, в модель вставляется новая строка и работа ведётся с ней.
      * */
-    if(row == -1){
+    if(id == -1)
+    {
         model->insertRow(model->rowCount(QModelIndex()));
         mapper->toLast();
     /* В противном случае диалог настраивается на заданную запись
      * */
-    } else {
-        mapper->setCurrentModelIndex(model->index(row, 0));
+    }
+    else
+    {
+        for (int row = 0; row < model->rowCount(); ++row)
+              {
+                  if (model->data(model->index(row, 0)).toInt() == id)
+                  {
+                      mapper->setCurrentModelIndex(model->index(row, 0));
+                  }
+              }
     }
 
     createUI();
@@ -51,19 +60,18 @@ void DialogAddEvent::setupModel()
     mapper = new QDataWidgetMapper();
     mapper->setModel(model);
     mapper->addMapping(ui->NameLineEdit, 1);
-    mapper->addMapping(ui->TypeLineEdit, 2);
+    mapper->addMapping(ui->TypeComboBox, 2);
     mapper->addMapping(ui->LocationLineEdit, 3);
-    mapper->addMapping(ui->InformationLineEdit, 4);
+    mapper->addMapping(ui->InformationPlainTextEdit, 4);
     mapper->addMapping(ui->OfficialSiteLineEdit, 5);
-    mapper->addMapping(ui->AgeLineEdit, 6);
-    mapper->addMapping(ui->HoursLineEdit, 7);
+    mapper->addMapping(ui->AgeComboBox, 6);
+    mapper->addMapping(ui->DateTimeEdit, 7);
 
     /* Ручное подтверждение изменения данных
      * через mapper
      * */
     mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 
-    qDebug() << ui->NameLineEdit->text();
     /* Подключаем коннекты от кнопок пролистывания
      * к прилистыванию модели данных в mapper
      * */
@@ -113,11 +121,6 @@ void DialogAddEvent::on_buttonBox_accepted()
         emit signalReady();
         this->close();
     }
-}
-
-void DialogAddEvent::accept()
-{
-    qDebug() << ui->NameLineEdit->text();
 }
 
 /* Метод изменения состояния активности кнопок пролистывания

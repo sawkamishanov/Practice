@@ -2,6 +2,8 @@
 
 DataBase::DataBase(QObject *parent) : QObject(parent)
 {
+    pathDB = PATH_DATABASE;
+    hostname = DATABASE_HOSTNAME;
 }
 
 DataBase::~DataBase()
@@ -15,7 +17,7 @@ void DataBase::connectToDataBase()
     /* Перед подключением к базе данных производим проверку на её существование.
      * В зависимости от результата производим открытие базы данных или её восстановление
      * */
-    if(!QFile(PATH_DATABASE DATABASE_NAME).exists())
+    if(!QFile(this->getPathDB()).exists())
         this->restoreDataBase();
     else
         this->openDataBase();
@@ -48,15 +50,15 @@ bool DataBase::openDataBase()
      * и имени базы данных, если она существует
      * */
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setHostName(DATABASE_HOSTNAME);
-    db.setDatabaseName(PATH_DATABASE DATABASE_NAME);
+    db.setHostName(this->getHostnameDB());
+    db.setDatabaseName(this->getPathDB());
     if  (db.open())
         return true;
     else
         return false;
 }
 
-/* Методы закрытия базы данных
+/* Закрытие базы данных
  * */
 void DataBase::closeDataBase()
 {
@@ -67,8 +69,7 @@ void DataBase::closeDataBase()
  * */
 bool DataBase::createEventTable()
 {
-    /* В данном случае используется формирование сырого SQL-запроса
-     * с последующим его выполнением.
+    /* Формирование сырого SQL-запросас последующим его выполнением.
      * */
     QSqlQuery query;
     if(!query.exec( "CREATE TABLE " EVENT " ("
@@ -76,10 +77,10 @@ bool DataBase::createEventTable()
                             EVENT_NAME          " VARCHAR(255)    NOT NULL,"
                             EVENT_TYPE          " VARCHAR(16)     NOT NULL,"
                             EVENT_LOCATION      " VARCHAR(18)     NOT NULL,"
-                            EVENT_INFORMATION   " VARCHAR(512)    NOT NULL,"
+                            EVENT_INFORMATION   " TEXT(512)       NOT NULL,"
                             EVENT_OFFICIAL_SITE " VARCHAR(64)     NOT NULL,"
                             EVENT_AGE           " VARCHAR(3)      NOT NULL,"
-                            EVENT_HOURS         " VARCHAR(10)     NOT NULL"
+                            EVENT_HOURS         " DATETIME        NOT NULL"
                         " )"
                     ))
     {
@@ -112,22 +113,15 @@ bool DataBase::inserIntoEventTable(const QVariantList &data)
                                              EVENT_AGE ", "
                                              EVENT_HOURS " ) "
                            "VALUES (:EventName, :Type, :Location, :Information, :OfficialSite, :Age, :Hours )");
-                                              /*" VALUES (:" EVENT_NAME ", "
-                                                      ": " EVENT_TYPE ", "
-                                                      ": " EVENT_LOCATION ", "
-                                                      ": " EVENT_INFORMATION ", "
-                                                      ": " EVENT_OFFICIAL_SITE ", "
-                                                      ": " EVENT_AGE ", "
-                                                      ": " EVENT_HOURS ")");*/
+
     query.bindValue(":EventName",      data[0].toString());
     query.bindValue(":Type",           data[1].toString());
     query.bindValue(":Location",       data[2].toString());
-    query.bindValue(":Information" ,   data[3].toString());
+    query.bindValue(":Information" ,   data[3].TextFormat);
     query.bindValue(":OfficialSite" ,  data[4].toString());
     query.bindValue(":Age" ,           data[5].toString());
-    query.bindValue(":Hours" ,         data[6].toString());
+    query.bindValue(":Hours" ,         data[6].toDateTime());
 
-    // После чего выполняется запросом методом exec()
     if(!query.exec())
     {
         qDebug() << "error insert into " << EVENT;

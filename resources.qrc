@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/resources">
-        <file>recources/img/1.png</file>
+        <file>recources/img/add.png</file>
+        <file>recources/img/delete.png</file>
+        <file>recources/img/edit.png</file>
     </qresource>
 </RCC>

@@ -7,8 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("Museum Project");
-    /* Первым делом необходимо создать объект для работы с базой данных
-     * и инициализировать подключение к базе данных
+    /* Cоздание объект для работы с базой данных и инициализация подключения к базе данных
      * */
     db = new DataBase();
     db->connectToDataBase();
@@ -24,8 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
                                    << trUtf8("Краткая информация")
                                    << trUtf8("Официальный сайт")
                                    << trUtf8("Возраст")
-                                   << trUtf8("Время работы")
-               );
+                                   << trUtf8("Дата"));
     /* Инициализируем внешний вид таблицы с данными
      * */
     this->createUI();
@@ -64,19 +62,19 @@ void MainWindow::createUI()
     // Устанавливаем Контекстное Меню
     ui->EventTableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    connect(ui->EventTableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotEditRecord()));
+    connect(ui->EventTableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(on_editEventButton_triggered()));
     // Подключаем СЛОТ вызова контекстного меню
     connect(ui->EventTableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotCustomMenuRequested(QPoint)));
 }
 
 /* Метод для активации диалога добавления записей
  * */
-void MainWindow::on_addEventButton_clicked()
+void MainWindow::on_addEventTable_triggered()
 {
     /* Создаем диалог и подключаем его сигнал завершения работы
      * к слоту обновления вида модели представления данных
      * */
-    DialogAddEvent *addEventDialog = new DialogAddEvent();
+    DialogAddEvent* addEventDialog = new DialogAddEvent();
     connect(addEventDialog, SIGNAL(signalReady()), this, SLOT(slotUpdateModels()));
 
     /* Выполняем запуск диалогового окна
@@ -85,33 +83,34 @@ void MainWindow::on_addEventButton_clicked()
     addEventDialog->exec();
 }
 
-void MainWindow::slotCustomMenuRequested(QPoint pos)
+/* Метод для активации диалога редактирования записей
+ * */
+void MainWindow::on_editEventButton_triggered()
 {
-    /* Создаем объект контекстного меню */
-    QMenu * menu = new QMenu(this);
-    /* Создаём действия для контекстного меню */
-    QAction * editEvent = new QAction(trUtf8("Редактировать"), this);
-    QAction * deleteEvent = new QAction(trUtf8("Удалить"), this);
-    /* Подключаем СЛОТы обработчики для действий контекстного меню */
-    connect(editEvent, SIGNAL(triggered()), this, SLOT(slotEditRecord()));     // Обработчик вызова диалога редактирования
-    connect(deleteEvent, SIGNAL(triggered()), this, SLOT(slotRemoveRecord())); // Обработчик удаления записи
-    /* Устанавливаем действия в меню */
-    menu->addAction(editEvent);
-    menu->addAction(deleteEvent);
-    /* Вызываем контекстное меню */
-    menu->popup(ui->EventTableView->viewport()->mapToGlobal(pos));
+    /* Также создаем диалог и подключаем его сигнал завершения работы
+     * к слоту обновления вида модели представления данных, но передаём
+     * в качестве параметров строку записи
+     * */
+    DialogAddEvent* addEventDialog = new DialogAddEvent(ui->EventTableView->selectionModel()->currentIndex().row());
+    connect(addEventDialog, SIGNAL(signalReady()), this, SLOT(slotUpdateModels()));
+
+    /* Выполняем запуск диалогового окна
+     * */
+    addEventDialog->setWindowTitle(trUtf8("Редактировать запись"));
+    addEventDialog->exec();
 }
 
-/* Слот для удаления записи из таблицы
+/* Метод для удаления записей
  * */
-void MainWindow::slotRemoveRecord()
+void MainWindow::on_deleteEventButton_triggered()
 {
     /* Выясняем, какая из строк была выбрана
      * */
     int row = ui->EventTableView->selectionModel()->currentIndex().row();
     /* Проверяем, что строка была действительно выбрана
      * */
-    if(row >= 0){
+    if(row >= 0)
+    {
         /* Задаём вопрос, стоит ли действительно удалять запись.
          * При положительном ответе удаляем запись
          * */
@@ -125,11 +124,14 @@ void MainWindow::slotRemoveRecord()
              * */
             QSqlDatabase::database().rollback();
             return;
-        } else {
+        }
+        else
+        {
             /* В противном случае производим удаление записи.
              * При успешном удалении обновляем таблицу.
              * */
-            if(!modelEvent->removeRow(row)){
+            if(!modelEvent->removeRow(row))
+            {
                 QMessageBox::warning(this, trUtf8("Уведомление"),
                                      trUtf8("Не удалось удалить запись\n"
                                             "Возможно она используется другими таблицами\n"
@@ -141,6 +143,23 @@ void MainWindow::slotRemoveRecord()
     }
 }
 
+void MainWindow::slotCustomMenuRequested(QPoint pos)
+{
+    /* Создаем объект контекстного меню */
+    QMenu* menu = new QMenu(this);
+    /* Создаём действия для контекстного меню */
+    QAction* editEvent = new QAction(trUtf8("Редактировать"), this);
+    QAction* deleteEvent = new QAction(trUtf8("Удалить"), this);
+    /* Подключаем СЛОТы обработчики для действий контекстного меню */
+    connect(editEvent, SIGNAL(triggered()), this, SLOT(on_editEventButton_triggered()));     // Обработчик вызова диалога редактирования
+    connect(deleteEvent, SIGNAL(triggered()), this, SLOT(on_deleteEventButton_triggered())); // Обработчик удаления записи
+    /* Устанавливаем действия в меню */
+    menu->addAction(editEvent);
+    menu->addAction(deleteEvent);
+    /* Вызываем контекстное меню */
+    menu->popup(ui->EventTableView->viewport()->mapToGlobal(pos));
+}
+
 /* Слот обновления модели представления данных
  * */
 void MainWindow::slotUpdateModels()
@@ -149,20 +168,42 @@ void MainWindow::slotUpdateModels()
     ui->EventTableView->resizeColumnsToContents();
 }
 
-/* Метод для активации диалога добавления записей в режиме редактирования
- * с передачей индекса выбранной строки
+/* Метод для поиска по названию
  * */
-void MainWindow::slotEditRecord()
+void MainWindow::on_findPushButton_clicked()
 {
-    /* Также создаем диалог и подключаем его сигнал завершения работы
-     * к слоту обновления вида модели представления данных, но передаём
-     * в качестве параметров строку записи
-     * */
-    DialogAddEvent *addEventDialog = new DialogAddEvent(ui->EventTableView->selectionModel()->currentIndex().row());
-    connect(addEventDialog, SIGNAL(signalReady()), this, SLOT(slotUpdateModels()));
+    modelEvent->setFilter(QString(EVENT_NAME " = '%1' ").arg(ui->FindLineEdit->text()));
+    modelEvent->select();
+}
 
-    /* Выполняем запуск диалогового окна
-     * */
-    addEventDialog->setWindowTitle(trUtf8("Редактировать запись"));
-    addEventDialog->exec();
+/* Метод для очистки поиска
+ * */
+void MainWindow::on_clearPushButton_clicked()
+{
+    modelEvent->setFilter(0);
+    modelEvent->select();
+}
+
+/* Метод для закрытия окна
+ * */
+void MainWindow::on_exitAction_triggered()
+{
+    MainWindow::close();
+}
+
+/* Метод для вызова справки
+ * */
+void MainWindow::on_aboutAction_triggered()
+{
+    HelpMenu* addHelpMenu = new HelpMenu();
+    connect(addHelpMenu, SIGNAL(signalReady()), this, SLOT(slotUpdateModels()));
+    addHelpMenu->show();
+}
+
+/* Метод для задания пути до БД
+ * */
+void MainWindow::on_getPathAction_triggered()
+{
+    db->setPathDB(QFileDialog::getOpenFileName(nullptr, trUtf8("Выберите файл:"), trUtf8("./"), trUtf8("Файл базы-данных (*.db)")));
+    //qDebug() <<  db->getPathDB();
 }
